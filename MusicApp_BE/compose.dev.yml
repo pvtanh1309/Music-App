@@ -1,0 +1,43 @@
+services:
+  postgres:
+    image: postgres:16-alpine
+    container_name: musicapp-postgres
+    environment:
+      POSTGRES_DB: ${DB_NAME:-SoundCloudDB}
+      POSTGRES_USER: ${DB_USERNAME:-app_user}
+      POSTGRES_PASSWORD: ${DB_PASSWORD:-app_user_1412}
+    ports:
+      - "${DB_PORT:-5432}:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: [ "CMD-SHELL", "pg_isready -U ${DB_USERNAME:-app_user}" ]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - musicapp-network
+
+  redis:
+    image: redis:7-alpine
+    container_name: musicapp-redis-dev
+    ports:
+      - "${REDIS_PORT:-6379}:6379"
+    command: redis-server --appendonly yes --requirepass ${REDIS_PASSWORD:-redis123}
+    volumes:
+      - redis_data_dev:/data
+    healthcheck:
+      test: [ "CMD", "redis-cli", "-a", "${REDIS_PASSWORD:-redis123}", "ping" ]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - musicapp-network
+
+volumes:
+  postgres_data:
+  redis_data_dev:
+
+networks:
+  musicapp-network:
+    driver: bridge
