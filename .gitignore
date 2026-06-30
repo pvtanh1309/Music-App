@@ -11,12 +11,13 @@ MusicApp_BE/logs/
 MusicApp_BE/*.log
 MusicApp_BE/.idea/
 MusicApp_BE/.DS_Store
+MusicApp_BE/.vscode/
 
 MusicApp_FE/.env
 MusicApp_FE/dist/
 MusicApp_FE/node_modules/
 MusicApp_FE/.gitignore
-MusicApp_FE/.env.*
+MusicApp_FE/.env
 MusicApp_FE/npm-debug.log*
 MusicApp_FE/yarn-debug.log*
 MusicApp_FE/yarn-error.log*

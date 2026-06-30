@@ -22,8 +22,8 @@ spring:
       host: ${REDIS_HOST:localhost}
       port: ${REDIS_PORT:6379}
       password: ${REDIS_PASSWORD:redis123}
-      ssl: 
-        enabled: true
+      ssl:
+        enabled: ${REDIS_SSL_ENABLED:false}
   mail:
     host: ${MAIL_HOST:smtp.gmail.com}
     port: ${MAIL_PORT:587}
@@ -37,7 +37,7 @@ spring:
       "[mail.smtp.writetimeout]": 5000
 
 jwt:
-  secret: musicapp-super-secret-key-must-be-at-least-32-bytes
+  secret: ${JWT_SECRET:change-this-in-production-at-least-32-characters}
   expiration-ms: 900000
   refresh-expiration-ms: 604800000
 aws:
