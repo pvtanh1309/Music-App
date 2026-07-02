@@ -1,12 +1,5 @@
--- Bước 1: Tạo user
-CREATE USER app_user WITH PASSWORD 'app_user_1412';
-
--- Bước 2: Cấp quyền kết nối vào DB (thiếu cái này là không vào được)
-GRANT CONNECT ON DATABASE "SoundCloudDB" TO app_user;
-GRANT USAGE ON SCHEMA public TO app_user;
-
--- Bước 3: Tạo tất cả bảng (giữ nguyên toàn bộ phần CREATE TABLE + ALTER TABLE của bạn)
 CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
+-- Dùng uuid_generate_v4() để tạo uuid tự động --
 
 CREATE TABLE "users" (
   "id" uuid PRIMARY KEY,

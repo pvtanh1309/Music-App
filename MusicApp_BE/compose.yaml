@@ -58,6 +58,30 @@ services:
     networks:
       - musicapp-network
 
+  prometheus:
+    image: prom/prometheus:latest
+    container_name: musicapp-prometheus
+    ports:
+      - "${PROMETHEUS_PORT:-9090}:9090"
+    volumes:
+      - ./prometheus/prometheus.yml:/etc/prometheus/prometheus.yml
+    depends_on:
+      - app
+    networks:
+      - musicapp-network
+
+  grafana:
+    image: grafana/grafana:latest
+    container_name: musicapp-grafana
+    ports:
+      - "${GRAFANA_PORT:-3000}:3000"
+    environment:
+      - GF_SECURITY_ADMIN_PASSWORD=${GRAFANA_ADMIN_PASSWORD:-admin}
+    depends_on:
+      - prometheus
+    networks:
+      - musicapp-network
+
 volumes:
   postgres_data:
     driver: local

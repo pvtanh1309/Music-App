@@ -46,3 +46,17 @@ aws:
     region: ${AWS_REGION:ap-southeast-1}
     access-key: ${AWS_ACCESS_KEY_ID:}
     secret-key: ${AWS_SECRET_ACCESS_KEY:}
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,prometheus # Mở port cho Prometheus và Health Check
+  endpoint:
+    health:
+      show-details: always # Luôn hiển thị chi tiết lỗi
+
+  prometheus:
+    metrics:
+      export:
+        enabled: true
