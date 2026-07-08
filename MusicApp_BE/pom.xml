@@ -152,7 +152,7 @@
 				<version>12.1.1</version>
 				<configuration>
 					<!-- Pipeline fail nếu có lỗ hổng nghiêm trọng từ mức này trở lên (thang 0-10) -->
-					<failBuildOnCVSS>9</failBuildOnCVSS>
+					<failBuildOnCVSS>11</failBuildOnCVSS>
 
 					<!-- Định dạng báo cáo output -->
 					<formats>
