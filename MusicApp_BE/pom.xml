@@ -134,6 +134,39 @@
 			</plugin>
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-checkstyle-plugin</artifactId>
+				<version>3.6.0</version>
+				<!-- Không bind vào lifecycle, chỉ chạy khi gọi ./mvnw checkstyle:check -->
+				<configuration>
+					<configLocation>checkstyle.xml</configLocation>
+					<encoding>UTF-8</encoding>
+					<consoleOutput>true</consoleOutput>
+					<failsOnError>true</failsOnError>
+					<!-- Bỏ qua các file generated (Lombok, Mapstruct,...) -->
+					<excludes>**/generated/**,**/target/**</excludes>
+				</configuration>
+			</plugin>
+			<plugin>
+				<groupId>org.owasp</groupId>
+				<artifactId>dependency-check-maven</artifactId> <!-- Security Scan -->
+				<version>12.1.1</version>
+				<configuration>
+					<!-- Pipeline fail nếu có lỗ hổng nghiêm trọng từ mức này trở lên (thang 0-10) -->
+					<failBuildOnCVSS>9</failBuildOnCVSS>
+
+					<!-- Định dạng báo cáo output -->
+					<formats>
+						<format>HTML</format>
+						<format>JSON</format>
+					</formats>
+
+					<!-- Bỏ qua scope test -->
+					<skipTestScope>true</skipTestScope>
+				</configuration>
+			</plugin>
+
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-compiler-plugin</artifactId>
 				<executions>
 					<execution>

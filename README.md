@@ -18,7 +18,10 @@ Tài liệu này đóng vai trò là hướng dẫn (guide) cho các thành viê
 - **Biến môi trường cần thiết (.env):** Đọc file example và điền thông tin vào .env
 
 ### Database & Redis
-- **Lệnh Docker Compose:** `docker compose -f compose.yml up -d --build`
+- **DATABASE**: Postgresql:18.4 (Bitnami)
+- **REDIS**: Redis:8.8.0 (Bitnami)
+- **Sử dụng docker compose:** `docker compose -f compose.replication.yml up -d --build`
+
 
 ### Frontend (`MusicApp_FE`)
 - **Ngôn ngữ / Framework:** Typesript + Vite 

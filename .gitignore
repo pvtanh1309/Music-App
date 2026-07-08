@@ -25,6 +25,14 @@ MusicApp_FE/pnpm-debug.log*
 MusicApp_FE/.eslintcache
 MusicApp_FE/.DS_Store
 
+
 .idea/
 .DS_Store
 .vscode/
+
+terraform/environments/dev/.terraform/
+terraform/environments/dev/.terraform.lock.hcl
+terraform/environments/dev/*.tfstate
+terraform/environments/dev/*.tfstate.*
+
+*.sarif
