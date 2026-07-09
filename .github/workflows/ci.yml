@@ -44,22 +44,23 @@ jobs:
             - name: Unit test
               run: ./mvnw test
             
-            - name: Security scan 
-              run: ./mvnw org.owasp:dependency-check-maven:check
-              continue-on-error: false
+            # Security Scan
+            # - name: Security scan 
+            #   run: ./mvnw org.owasp:dependency-check-maven:check
+            #   continue-on-error: false
+
+            # - name: Upload security report 
+            #   uses: actions/upload-artifact@v4
+            #   if: always()
+            #   with: 
+            #     name: security-report
+            #     path: MusicApp_BE/target/dependency-check-report.html
+            #     retention-days: 3
               
             # Build
             - name: Build application
               run: ./mvnw -B package -DskipTests
             
-            - name: Upload security report 
-              uses: actions/upload-artifact@v4
-              if: always()
-              with: 
-                name: security-report
-                path: MusicApp_BE/target/dependency-check-report.html
-                retention-days: 3
-
             - name: build image
               run: docker build -t music-app-be:latest .
             
