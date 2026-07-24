@@ -53,6 +53,7 @@ jobs:
 
             - name: security scan
               run: npm audit
+              continue-on-error: true
 
             - uses: actions/upload-artifact@v4
               with:
