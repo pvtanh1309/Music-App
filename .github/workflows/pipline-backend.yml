@@ -76,7 +76,7 @@ jobs:
             - name: trivy scan image
               uses: aquasecurity/trivy-action@0.35.0
               with: 
-                image-ref: 'music-app-be:latest'
+                image-ref: 'music-app-be:latest' 
                 format: 'sarif'
                 output: 'trivy-results.sarif'
                 severity: "HIGH,CRITICAL"
