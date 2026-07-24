@@ -9,7 +9,7 @@
 		<relativePath/> <!-- lookup parent from repository -->
 	</parent>
 	<groupId>nhantr</groupId>
-	<artifactId>musicapp</artifactId>
+	<artifactId>musicapp</artifactId> 
 	<version>0.0.1-SNAPSHOT</version>
 	<name>musicapp</name>
 	<description/>
