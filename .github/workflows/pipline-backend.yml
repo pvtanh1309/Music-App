@@ -5,7 +5,7 @@ on:
         branches:
             - "**"
         paths:
-          - "./MusicApp_BE/**"
+          - "MusicApp_BE/**"
     pull_request:
         branches:
             - "main"
