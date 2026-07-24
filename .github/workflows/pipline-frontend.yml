@@ -87,7 +87,7 @@ jobs:
             
             - name: Deploy to S3 
               run: | 
-                aws s3 sync ./dist s3://dev-frontend-music-app-130 --delete
+                aws s3 sync ./dist s3://dev-frontend-music-app-1309 --delete
             
             - name: Invalidate CloudFront
               run: |
