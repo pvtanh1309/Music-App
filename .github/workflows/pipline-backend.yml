@@ -6,6 +6,7 @@ on:
             - "**"
         paths:
           - "MusicApp_BE/**"
+          - ".github/workflows/pipline-backend.yml" 
     pull_request:
         branches:
             - "main"
