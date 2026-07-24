@@ -86,11 +86,11 @@ jobs:
             
             - name: Deploy to S3 
               run: | 
-                aws s3 sync ./dist s3://${{secrets.music_app_frontend_bucket}} --delete
+                aws s3 sync ./dist s3://${{vars.music_app_frontend_bucket}} --delete
             
             - name: Invalidate CloudFront
               run: |
                 aws cloudfront create-invalidation \
-                    --distribution-id ${{secrets.cloudfront_distribution_id}} \
+                    --distribution-id ${{vars.cloudfront_distribution_id}} \
                     --paths "/*"
             
