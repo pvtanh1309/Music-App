@@ -60,3 +60,24 @@ module "cdn" {
   frontend_bucket_id = module.storage.frontend_bucket_id
   storage_bucket_id = module.storage.storage_bucket_id
 }
+
+resource "aws_s3_bucket" "terraform_state" {
+  bucket = "tf-state-music-app-dev-24072026"
+}
+
+resource "aws_s3_bucket_versioning" "bucket_state_version" {
+  bucket = aws_s3_bucket.terraform_state.id
+  versioning_configuration {
+    status = "Enabled"
+  }
+}
+
+resource "aws_dynamodb_table" "terraform_state_lock" {
+  name = "tf-lock-music-app-dev-24072026"
+  hash_key = "LockID"
+  attribute {
+    name = "LockID"
+    type = "S"
+  }
+  billing_mode = "PAY_PER_REQUEST"
+}

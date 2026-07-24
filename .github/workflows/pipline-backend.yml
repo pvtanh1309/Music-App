@@ -1,0 +1,183 @@
+name: CI 
+
+on: 
+    push: 
+        branches:
+            - "**"
+        paths:
+          - "./MusicApp_BE/**"
+    pull_request:
+        branches:
+            - "main"
+        paths:
+            - "MusicApp_BE/**"
+
+concurrency:
+  group: ci-backend
+  cancel-in-progress: true
+
+jobs: 
+    test: 
+        runs-on: ubuntu-latest
+        defaults:
+            run:
+                working-directory: ./MusicApp_BE
+        permissions:
+            actions: read
+            contents: read
+            security-events: write
+
+        steps:
+            
+            # Clone code vừa được commit về VM
+            - name: Checkout source code
+              uses: actions/checkout@v4
+            
+            # Cài Java
+            - name: Set up JDK 21
+              uses: actions/setup-java@v4
+              with: 
+                distribution: 'temurin'
+                java-version: '21'
+                cache: maven
+
+            # Cấp quyền thực thi cho mvnw
+            - name: Grant execute permission for mvnw
+              run: chmod +x mvnw
+            
+            - name: lint test
+              run: ./mvnw checkstyle:check
+
+            # Run tất cả unit test trong project
+            - name: Unit test
+              run: ./mvnw test
+            
+            # Security Scan
+            # - name: Security scan 
+            #   run: ./mvnw org.owasp:dependency-check-maven:check
+            #   continue-on-error: false
+
+            # - name: Upload security report 
+            #   uses: actions/upload-artifact@v4
+            #   if: always()
+            #   with: 
+            #     name: security-report
+            #     path: MusicApp_BE/target/dependency-check-report.html
+            #     retention-days: 3
+              
+            # Build
+            - name: Build application
+              run: ./mvnw -B package -DskipTests
+            
+            - name: build image
+              run: docker build -t music-app-be:latest .
+            
+            - name: trivy scan image
+              uses: aquasecurity/trivy-action@0.35.0
+              with: 
+                image-ref: 'music-app-be:latest'
+                format: 'sarif'
+                output: 'trivy-results.sarif'
+                severity: "HIGH,CRITICAL"
+                exit-code: 0
+            
+            - name: Upload Trivy scan results to GitHub Security tab
+              uses: github/codeql-action/upload-sarif@v3
+              if: always()
+              with: 
+                sarif_file: trivy-results.sarif
+            
+            - name: upload-artifact
+              uses: actions/upload-artifact@v4
+              with: 
+                name: backend-jar
+                path: ./MusicApp_BE/target/
+      
+    build-and-push:
+      runs-on: ubuntu-latest
+      needs: test
+      defaults:
+          run:
+              working-directory: ./MusicApp_BE
+      outputs:
+          image-name: ${{steps.build-and-push.outputs.image-name}}
+      
+      steps: 
+          - name: Checkout source code
+            uses: actions/checkout@v4
+
+          - name: down-artifact
+            uses: actions/download-artifact@v4
+            with:
+              name: backend-jar
+              path: ./MusicApp_BE/target/
+
+          - name: Configure AWS Credentials
+            uses: aws-actions/configure-aws-credentials@v4
+            with:
+              role-to-assume: arn:aws:iam::587861287952:role/GitHubActions-S3DeployRole
+              aws-region: us-east-1
+          
+          - name: Login to ECR
+            id: login-ecr
+            uses: aws-actions/amazon-ecr-login@v2
+          
+          - name: Build, tags and Push image into ECR
+            id: build-and-push
+            env: 
+              REGISTRY: ${{steps.login-ecr.outputs.registry}}
+              IMAGE_NAME: ${{secrets.IMAGE_NAME}}
+              IMAGE_TAG: ${{github.sha}}     # Dùng mã commit để làm tag cho image
+            run: |
+              IMAGE_URL=$REGISTRY/$IMAGE_NAME:$IMAGE_TAG
+              docker build -t $IMAGE_URL .
+              docker push $IMAGE_URL
+              echo "image-name=$IMAGE_URL" >> "$GITHUB_OUTPUT"
+              
+    deploy: 
+      runs-on: ubuntu-latest
+      defaults: 
+        run:
+          working-directory: ./MusicApp_BE
+      needs: build-and-push
+      # Chỉ chạy Job deploy nếu code nằm trên nhánh main
+      if: github.ref == 'refs/heads/main'   
+
+      steps: 
+          - name: Setup AWS Credentials
+            uses: aws-actions/configure-aws-credentials@v4
+            with:
+              role-to-assume: arn:aws:iam::587861287952:role/GitHubActions-S3DeployRole
+              aws-region: us-east-1 
+
+          - name: Clone current Task Definition 
+            run: aws ecs describe-task-definition \
+              --task-definition ${{secrets.ECS_TASK_DEFINITION}} \
+              --query taskDefinition > task-definition.json
+          
+          - name: Update image in task definition
+            id: render-task 
+            uses: aws-actions/amazon-ecs-render-task-definition@v1
+            with:
+              task-definition: ./MusicApp_BE/task-definition.json
+              container-name: ${{secrets.CONTAINER_NAME}}
+              image: ${{needs.build-and-push.outputs.image-name}}
+
+          - name: Update ECS Task Definition
+            id: update-ecs-def
+            uses: aws-actions/amazon-ecs-deploy-task-definition@v2
+            with:
+              task-definition: ${{steps.render-task.outputs.task-definition}}
+              service: ${{secrets.ECS_SERVICE_NAME}}
+              cluster: ${{secrets.ECS_CLUSTER_NAME}}
+              wait-for-service-stability: true
+              
+              
+          
+        
+
+    
+                
+
+
+            

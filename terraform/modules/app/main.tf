@@ -14,9 +14,9 @@ resource "aws_lb" "alb" {
 }
 
 resource "aws_lb_target_group" "aws_lb_target_group" {
-    name = "${var.environment}-alb-tg"
+    name = "${var.environment}-alb-tg-8080"
 
-    port = 80       # Sau này triển khai thực tế dùng port 8080 
+    port = 8080       
     protocol = "HTTP"
     vpc_id = var.vpc_id
     target_type = "ip"
@@ -40,8 +40,12 @@ resource "aws_lb_target_group" "aws_lb_target_group" {
         matcher = "200"
 
         # URL Kiểm tra
-        path = "/"    # Sau này sửa thành /actuator/health
+        path = "/actuator/health"    # Sau này sửa thành /actuator/health
     }
+
+   lifecycle {
+       create_before_destroy = true
+   }
 }
 
 # Load Balancer Listener
@@ -107,9 +111,16 @@ resource "aws_ecs_task_definition" "ecs-task-def" {
             image = "nginxdemos/hello:plain-text"
             portMappings = [
                 {
-                    containerPort = 80    # Sau này đổi thành 8080
+                    containerPort = 8080   
                     protocol = "tcp"
                 }
+            ]
+            environment = [
+                { name = "SPRING_DATASOURCE_URL", value = "jdbc:postgresql://10.0.4.14:5433/SoundCloudDB"},
+                { name = "SPRING_DATASOURCE_USERNAME", value = "app_user" },
+                { name = "SPRING_DATASOURCE_PASSWORD", value = "app_user_1309" },
+                { name = "SPRING_REDIS_HOST", value = "10.0.4.14" },
+                { name = "SPRING_REDIS_PORT", value = "6379" }
             ]
         }
     ])
@@ -140,6 +151,10 @@ resource "aws_ecs_service" "music-app-service" {
     load_balancer {
         target_group_arn = aws_lb_target_group.aws_lb_target_group.arn
         container_name = "music_app_container"
-        container_port = 80    # Sau này sửa thành 8080
+        container_port = 8080
+    }
+
+    lifecycle {
+        ignore_changes = [task_definition]
     }
 }
