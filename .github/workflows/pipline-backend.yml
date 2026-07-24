@@ -155,9 +155,7 @@ jobs:
               aws-region: us-east-1 
 
           - name: Clone current Task Definition 
-            run: aws ecs describe-task-definition \
-              --task-definition dev-music-app-task-def \
-              --query taskDefinition > task-definition.json
+            run: aws ecs describe-task-definition --task-definition dev-music-app-task-def --query taskDefinition > task-definition.json
           
           - name: Update image in task definition
             id: render-task 
