@@ -60,6 +60,9 @@ jobs:
 
     deploy: 
         runs-on: ubuntu-latest
+        permissions:
+          id-token: write
+          contents: read
         needs: build
         # Chỉ chạy Job deploy nếu code nằm trên nhánh main
         if: github.ref == 'refs/heads/main'   

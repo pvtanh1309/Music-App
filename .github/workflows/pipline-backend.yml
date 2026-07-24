@@ -95,6 +95,9 @@ jobs:
       
     build-and-push:
       runs-on: ubuntu-latest
+      permissions:
+        id-token: write
+        contents: read
       needs: test
       defaults:
           run:
@@ -136,6 +139,9 @@ jobs:
               
     deploy: 
       runs-on: ubuntu-latest
+      permissions:
+        id-token: write
+        contents: read
       defaults: 
         run:
           working-directory: ./MusicApp_BE
