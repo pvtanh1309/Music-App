@@ -130,7 +130,7 @@ jobs:
             id: build-and-push
             env: 
               REGISTRY: ${{steps.login-ecr.outputs.registry}}
-              IMAGE_NAME: ${{secrets.IMAGE_NAME}}
+              IMAGE_NAME: dev-music-app
               IMAGE_TAG: ${{github.sha}}     # Dùng mã commit để làm tag cho image
             run: |
               IMAGE_URL=$REGISTRY/$IMAGE_NAME:$IMAGE_TAG
@@ -155,14 +155,14 @@ jobs:
               aws-region: us-east-1 
 
           - name: Clone current Task Definition 
-            run: aws ecs describe-task-definition --task-definition ${{secrets.ECS_TASK_DEFINITION}} --query taskDefinition > task-definition.json
+            run: aws ecs describe-task-definition --task-definition dev-music-app-task-def --query taskDefinition > task-definition.json
           
           - name: Update image in task definition
             id: render-task 
             uses: aws-actions/amazon-ecs-render-task-definition@v1
             with:
               task-definition: task-definition.json
-              container-name: ${{secrets.ECS_CONTAINER_NAME}}
+              container-name: music_app_container
               image: ${{needs.build-and-push.outputs.image-name}}
 
           - name: Update ECS Task Definition
@@ -170,8 +170,8 @@ jobs:
             uses: aws-actions/amazon-ecs-deploy-task-definition@v2
             with:
               task-definition: ${{steps.render-task.outputs.task-definition}}
-              service: ${{secrets.ECS_SERVICE_NAME}}
-              cluster: ${{secrets.ECS_CLUSTER_NAME}}
+              service: dev-music-app-service
+              cluster: dev-app-cluster
               wait-for-service-stability: true
               
               
