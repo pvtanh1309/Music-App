@@ -120,7 +120,7 @@ jobs:
             uses: aws-actions/configure-aws-credentials@v4
             with:
               role-to-assume: arn:aws:iam::587861287952:role/GitHubActions-S3DeployRole
-              aws-region: ${{secrets.AWS_REGION}}
+              aws-region: us-east-1
           
           - name: Login to ECR
             id: login-ecr
@@ -152,7 +152,7 @@ jobs:
             uses: aws-actions/configure-aws-credentials@v4
             with:
               role-to-assume: arn:aws:iam::587861287952:role/GitHubActions-S3DeployRole
-              aws-region: ${{secrets.AWS_REGION}} 
+              aws-region: us-east-1 
 
           - name: Clone current Task Definition 
             run: aws ecs describe-task-definition --task-definition ${{secrets.ECS_TASK_DEFINITION}} --query taskDefinition > task-definition.json
