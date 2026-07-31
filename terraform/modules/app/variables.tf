@@ -57,3 +57,7 @@ variable "private_subnet_02_az2_id" {
     description = "ID của subnet private AZ2"
     type = string
 }
+
+variable "db_host" {
+  type = string
+}

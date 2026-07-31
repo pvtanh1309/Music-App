@@ -1,0 +1,38 @@
+services:
+  pgmaster:
+    image: docker.io/bitnami/postgresql:latest
+    container_name: pg-master
+    environment:
+      - POSTGRESQL_REPLICATION_MODE=master
+      - POSTGRESQL_REPLICATION_USER=repl_user
+      - POSTGRESQL_REPLICATION_PASSWORD=${DB_PASSWORD:-app_user_1309}
+      - POSTGRESQL_USERNAME=${DB_USERNAME:-app_user}
+      - POSTGRESQL_PASSWORD=${DB_PASSWORD:-app_user_1309}
+      - POSTGRESQL_DATABASE=${DB_NAME:-SoundCloudDB}
+    ports:
+      - "5433:5432"
+    volumes:
+      - pg_master_data:/bitnami/postgresql
+      - ./src/main/resources/schema_1.sql:/docker-entrypoint-initdb.d/schema_1.sql
+    healthcheck:
+      test: [ "CMD-SHELL", "pg_isready -U ${DB_USERNAME:-app_user} -d ${DB_NAME:-SoundCloudDB}" ]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 30s
+
+  redismaster:
+    image: docker.io/bitnami/redis:latest
+    container_name: redis-master
+    environment:
+      - REDIS_REPLICATION_MODE=master
+      - REDIS_PASSWORD=${REDIS_PASSWORD:-redis123}
+      - REDIS_SSL_ENABLED=${REDIS_SSL_ENABLED:-true}
+    ports:
+      - "${REDIS_PORT:-6379}:6379"
+    volumes:
+      - redis_master_data:/bitnami/redis/data
+
+volumes:
+  pg_master_data:
+  redis_master_data:

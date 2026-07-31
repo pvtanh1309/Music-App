@@ -116,10 +116,10 @@ resource "aws_ecs_task_definition" "ecs-task-def" {
                 }
             ]
             environment = [
-                { name = "SPRING_DATASOURCE_URL", value = "jdbc:postgresql://10.0.4.14:5433/SoundCloudDB"},
+                { name = "SPRING_DATASOURCE_URL", value = "jdbc:postgresql://${var.db_host}:5433/SoundCloudDB"},
                 { name = "SPRING_DATASOURCE_USERNAME", value = "app_user" },
                 { name = "SPRING_DATASOURCE_PASSWORD", value = "app_user_1309" },
-                { name = "SPRING_REDIS_HOST", value = "10.0.4.14" },
+                { name = "SPRING_REDIS_HOST", value = "${var.db_host}" },
                 { name = "SPRING_REDIS_PORT", value = "6379" }
             ]
         }
