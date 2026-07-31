@@ -36,6 +36,7 @@ module "app" {
   private_subnet_02_az1_id = module.networking.private_subnet_02_az1_id
   private_subnet_01_az2_id = module.networking.private_subnet_01_az2_id
   private_subnet_02_az2_id = module.networking.private_subnet_02_az2_id
+  db_host = module.compute.db_master_private_ip
   alb_sg = module.security.alb_sg
   ecs_sg = module.security.ecs_sg
   ecs_pull_image_role_arn = module.security.ecs_pull_image_role_arn

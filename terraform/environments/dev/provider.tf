@@ -6,11 +6,11 @@ terraform {
     }
   }
   backend "s3" {
-    bucket= "tf-state-music-app-dev-24072026"
-    key    = "dev/terraform.tfstate"
-    region = "us-east-1"
-    dynamodb_table = "tf-lock-music-app-dev-24072026"
-    encrypt = true
+    bucket       = "tf-state-music-app-dev-24072026"
+    key          = "dev/terraform.tfstate"
+    region       = "us-east-1"
+    use_lockfile = true
+    encrypt      = true
   }
 }
 
