@@ -20,6 +20,7 @@ concurrency:
 jobs: 
     build: 
         runs-on: ubuntu-latest
+        environment: dev
         defaults: 
             run: 
                 working-directory: ./MusicApp_FE
@@ -66,6 +67,7 @@ jobs:
           id-token: write
           contents: read
         needs: build
+        environment: dev
         # Chỉ chạy Job deploy nếu code nằm trên nhánh main
         if: github.ref == 'refs/heads/main'   
         defaults: 

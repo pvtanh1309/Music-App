@@ -148,6 +148,8 @@ resource "aws_ecs_service" "music-app-service" {
         assign_public_ip = false
     }
 
+    health_check_grace_period_seconds = 120
+
     load_balancer {
         target_group_arn = aws_lb_target_group.aws_lb_target_group.arn
         container_name = "music_app_container"
