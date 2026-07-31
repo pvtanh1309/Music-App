@@ -106,7 +106,7 @@ jobs:
           run:
               working-directory: ./MusicApp_BE
       outputs:
-          image-name: ${{steps.build-and-push.outputs.image-name}}
+          image-name: ${{steps.build-tag-push.outputs.image-name}}
       
       steps: 
           - name: Checkout source code
@@ -129,7 +129,7 @@ jobs:
             uses: aws-actions/amazon-ecr-login@v2
           
           - name: Build, tags and Push image into ECR
-            id: build-and-push
+            id: build-tag-push
             env: 
               REGISTRY: ${{steps.login-ecr.outputs.registry}}
               IMAGE_NAME: ${{secrets.IMAGE_NAME}}
