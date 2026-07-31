@@ -54,8 +54,8 @@ resource "aws_vpc_security_group_ingress_rule" "allow_alb" {
   security_group_id = aws_security_group.ecs_sg.id
   referenced_security_group_id = aws_security_group.alb_sg.id
 
-  from_port = 80
-  to_port = 80
+  from_port = 8080
+  to_port = 8080
   ip_protocol = "tcp"
 }
 
@@ -100,8 +100,8 @@ resource "aws_vpc_security_group_ingress_rule" "allow_postgresql" {
   security_group_id = aws_security_group.ec2_db_sg.id
   referenced_security_group_id = aws_security_group.ecs_sg.id
 
-  from_port = 5432
-  to_port = 5432
+  from_port = 5433
+  to_port = 5433
   ip_protocol = "tcp"
 }
 
