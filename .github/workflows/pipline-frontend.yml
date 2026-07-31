@@ -84,15 +84,15 @@ jobs:
               uses: aws-actions/configure-aws-credentials@v4
               with:
                 role-to-assume: arn:aws:iam::587861287952:role/GitHubActions-S3DeployRole
-                aws-region: us-east-1
+                aws-region: ${{secrets.AWS_REGION}}
             
             - name: Deploy to S3 
               run: | 
-                aws s3 sync ./dist s3://dev-frontend-music-app-1309 --delete
+                aws s3 sync ./dist s3://${{secrets.MUSIC_APP_FRONTEND_BUCKET}} --delete
             
             - name: Invalidate CloudFront
               run: |
                 aws cloudfront create-invalidation \
-                    --distribution-id E22N8XUKIZCTY2 \
+                    --distribution-id ${{secrets.CLOUDFRONT_DISTRIBUTION_ID}} \
                     --paths "/*"
             
